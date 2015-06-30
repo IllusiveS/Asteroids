@@ -25,7 +25,7 @@ public class Asteroid : BaseBehavior, IAsteroid, IAsteroidView
     void Start()
     {
         rigidbody = GetComponent<Rigidbody2D>();
-        rigidbody.AddForce(Controller.CalculateDirection() * (2 - transform.localScale.x));
+        rigidbody.AddForce(Controller.CalculateDirection() * (2.5f - transform.localScale.x));
     }
 
     #region IAsteroidView
