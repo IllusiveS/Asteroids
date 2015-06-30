@@ -5,14 +5,18 @@ using Zenject;
 
 public class ScreenBorderChangeComponent : BaseBehavior {
 
+
+    public float topValue;
+    public float bottomValue;
+
 	void Update()
     {
         Vector3 position = Camera.main.WorldToViewportPoint(transform.position);
 
-        if (position.x > 1) transform.position = Camera.main.ViewportToWorldPoint(new Vector3(0, position.y, position.z));
-        if (position.y > 1) transform.position = Camera.main.ViewportToWorldPoint(new Vector3(position.x, 0, position.z));
-        if (position.x < 0) transform.position = Camera.main.ViewportToWorldPoint(new Vector3(1, position.y, position.z));
-        if (position.y < 0) transform.position = Camera.main.ViewportToWorldPoint(new Vector3(position.x, 1, position.z));
+        if (position.x > topValue) transform.position = Camera.main.ViewportToWorldPoint(new Vector3(bottomValue, position.y, position.z));
+        if (position.y > topValue) transform.position = Camera.main.ViewportToWorldPoint(new Vector3(position.x, bottomValue, position.z));
+        if (position.x < bottomValue) transform.position = Camera.main.ViewportToWorldPoint(new Vector3(topValue, position.y, position.z));
+        if (position.y < bottomValue) transform.position = Camera.main.ViewportToWorldPoint(new Vector3(position.x, topValue, position.z));
     }
 
 }
