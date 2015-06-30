@@ -13,8 +13,14 @@ public interface IGameState
     void RemoveAsteroid(IAsteroid asteroidToRemove);
 }
 public class GameState : BaseBehavior, IGameState {
+
+    public int startSmallAsteroidAmmount;
+
+    public int smallAsteroidIncrease;
+
     public int timeTicksToSpawn;
     public float tickCooldown;
+    protected float maxTickCooldown;
     public float minTickCooldown;
     public float tickOffsetPerTick;
 
@@ -39,6 +45,7 @@ public class GameState : BaseBehavior, IGameState {
 
     void Start()
     {
+        maxTickCooldown = tickCooldown;
         currentTime = Time.time;
         tickTime = Time.time + tickCooldown;
     }
@@ -54,20 +61,44 @@ public class GameState : BaseBehavior, IGameState {
         }
         if(asteroids.Count == 0)
         {
-
+            BeginNewStage();
         }
+        if (Time.time > invincibilityTime)
+            player.isInvincible = false;
     }
     void BeginNewStage()
     {
-
+        player.isInvincible = true;
+        invincibilityTime = Time.time + 4.0f;
+        SpawnNewAsteroids();
+        tickCooldown = maxTickCooldown;
     }
+    protected float invincibilityTime;
     public void Die()
     {
         Application.LoadLevel(Application.loadedLevel);
     }
 
+    void SpawnNewAsteroids()
+    {
+        for(int i = 0; i < startSmallAsteroidAmmount; i++)
+        {
+            SpawnAsteroid();
+        }
+    }
+    void SpawnAsteroid()
+    {
+        Asteroid asteroid = asteroidFactory.Create();
+
+        Vector3 pos = new Vector3(Random.Range(0.0f, 1.0f), Random.Range(0.0f, 1.0f), 10);
+        Vector3 newPos = Camera.main.ViewportToWorldPoint(pos);
+
+        asteroid.transform.position = newPos;
+    }
+
     [Inject]
     protected Asteroid.Factory asteroidFactory;
-
+    [Inject]
+    protected IPlayer player;
 
 }
