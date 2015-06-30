@@ -27,9 +27,9 @@ public class Bullet : BaseBehavior, IBulletView
     }
     #endregion
 
-    void OnCollisionEnter2D(Collision2D coll)
+    void OnTriggerEnter2D(Collider2D other)
     {
-        IAsteroid potentialAsteroid = coll.gameObject.GetComponent<IAsteroid>();
+        IAsteroid potentialAsteroid = other.gameObject.GetComponent<IAsteroid>();
         if (potentialAsteroid == null) return;
 
         potentialAsteroid.GetRekt();

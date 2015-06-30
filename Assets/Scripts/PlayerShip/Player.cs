@@ -82,6 +82,9 @@ public interface IPlayerController
     void Reload();
     void Fire();
     void ProcessKeyboardInput(Vector2 input);
+
+    void AddPoints(int points);
+    int Points { get; }
 }
 public class PlayerController : IPlayerController
 {
@@ -92,9 +95,20 @@ public class PlayerController : IPlayerController
     [SerializeField]
     protected bool CanFire = true;
 
+    protected int points;
+
+    public int Points
+    {
+        get { return points; }
+    }
+
     public void Reload()
     {
         CanFire = true;
+    }
+    public void AddPoints(int points)
+    {
+        this.points += points;
     }
     public void Fire()
     {
