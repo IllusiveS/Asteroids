@@ -26,8 +26,13 @@ public class Asteroid : BaseBehavior, IAsteroid, IAsteroidView
     {
         rigidbody = GetComponent<Rigidbody2D>();
         rigidbody.AddForce(Controller.CalculateDirection() * (2.5f - transform.localScale.x));
-    }
 
+        state.AddAsteroid(this);
+    }
+    void OnDestroy()
+    {
+        state.RemoveAsteroid(this);
+    }
     #region IAsteroidView
     void IAsteroidView.Explode()
     {
@@ -47,6 +52,9 @@ public class Asteroid : BaseBehavior, IAsteroid, IAsteroidView
     #endregion
 
     public class Factory : GameObjectFactory<Asteroid> { }
+
+    [Inject]
+    protected IGameState state;
 }
 
 public delegate void RektHandler();

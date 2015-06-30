@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 using FullInspector;
+using UnityEngine.Events;
+using Zenject;
 
 public delegate void DirectionHandler(Vector2 direction);
 public delegate void FireTheCannonsHandler();
+
 
 public interface IPlayer
 {
@@ -13,6 +16,14 @@ public interface IPlayer
 
     void AddDirectionObserver(DirectionHandler observer);
     void AddFireObserver(FireTheCannonsHandler observer);
+
+    void Die();
+
+    bool isInvincible
+    {
+        get;
+        set;
+    }
 }
 public interface IPlayerView
 {
@@ -27,6 +38,14 @@ public class Player : BaseBehavior, IPlayer, IPlayerView
     protected float shotTime;
     [SerializeField]
     protected GameObject bulletPrefab;
+    [SerializeField]
+    protected bool isInvincibleValue;
+
+    public bool isInvincible 
+    { 
+        get { return isInvincibleValue; }
+        set { isInvincibleValue = value; }
+    }
     
     void Start()
     {
@@ -45,6 +64,10 @@ public class Player : BaseBehavior, IPlayer, IPlayerView
         {
             Controller.Reload();
         }
+    }
+    public void Die()
+    {
+        Controller.Die();
     }
     void IPlayerView.Fire()
     {
@@ -75,7 +98,11 @@ public class Player : BaseBehavior, IPlayer, IPlayerView
     }
     
     #endregion
-
+    [PostInject]
+    void Setup(IGameState state)
+    {
+        Controller.GameState = state;
+    }
 }
 public interface IPlayerController
 {
@@ -85,6 +112,9 @@ public interface IPlayerController
 
     void AddPoints(int points);
     int Points { get; }
+
+    void Die();
+    int Lifes { get; }
 }
 public class PlayerController : IPlayerController
 {
@@ -95,7 +125,27 @@ public class PlayerController : IPlayerController
     [SerializeField]
     protected bool CanFire = true;
 
+    protected IGameState state;
+    public IGameState GameState
+    {
+        set { state = value; }
+    }
+
     protected int points;
+    [SerializeField]
+    protected int lifes;
+
+    public void Die()
+    {
+        lifes--;
+        if (lifes < 1)
+            state.Die();
+        //view.Die();
+    }
+    public int Lifes
+    {
+        get { return lifes; }
+    }
 
     public int Points
     {
