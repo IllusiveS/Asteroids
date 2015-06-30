@@ -8,7 +8,7 @@ public class PlayerControllerInstaller : MonoInstaller {
 
     public override void InstallBindings()
     {
-        Container.Bind<IPlayerController>().ToSinglePrefab(playerControllerPrefab);
+        Container.Bind<IPlayer>().ToSinglePrefab(playerControllerPrefab);
     }
 
 }

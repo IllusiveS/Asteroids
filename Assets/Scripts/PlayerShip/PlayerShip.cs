@@ -8,7 +8,11 @@ public interface IPlayerShipView
     void AddForce(Vector2 Direction);
     void Shoot();
 }
-public class PlayerShip : BaseBehavior, IPlayerShipView {
+public interface IPlayerShip
+{
+    event FireTheCannonsHandler OnFireTheCannons;
+}
+public class PlayerShip : BaseBehavior, IPlayerShipView, IPlayerShip {
 
     public PlayerShipController Controller;
 
@@ -27,17 +31,19 @@ public class PlayerShip : BaseBehavior, IPlayerShipView {
     }
     void IPlayerShipView.Shoot()
     {
-
+        if (OnFireTheCannons != null) OnFireTheCannons();
     }
     #endregion
-
+    #region IPlayerShip
+    public event FireTheCannonsHandler OnFireTheCannons;
+    #endregion
     void OnEnable()
     {
         Controller.View = this;
     }
-
+  
     [PostInject]
-    void Setup(IPlayerController playerController)
+    void Setup(IPlayer playerController)
     {
         Controller.Controller = playerController;
     }
@@ -45,28 +51,25 @@ public class PlayerShip : BaseBehavior, IPlayerShipView {
 public class PlayerShipController
 {
 
-    protected IPlayerController controller;
-    public IPlayerController Controller
+    protected IPlayer controller;
+    public IPlayer Controller
     {
         set
         {
             controller = value;
-            controller.OnDirectionChange += CalculateMovement;
+            controller.AddDirectionObserver(CalculateMovement);
+            controller.AddFireObserver(FireTheCannons);
         }
     }
-
-    [SerializeField]
-    protected float Speed;
-    [SerializeField]
-    protected float RotationSpeed;
     
     public void CalculateMovement(Vector2 direction)
     {
-        direction.x = direction.x * Speed;
-        direction.y = direction.y * RotationSpeed; 
         view.AddForce(direction);
     }
-
+    public void FireTheCannons()
+    {
+        view.Shoot();
+    }
     #region view
     protected IPlayerShipView view;
     public IPlayerShipView View
