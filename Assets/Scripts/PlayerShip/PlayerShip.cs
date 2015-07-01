@@ -17,8 +17,15 @@ public interface IPlayerShip
 {
     event FireTheCannonsHandler OnFireTheCannons;
 }
-public class PlayerShip : BaseBehavior, IPlayerShipView, IPlayerShip {
+public class PlayerShip : BaseBehavior, IPlayerShipView, IPlayerShip, IAsteroid {
+    void IAsteroid.AddRektListener(RektHandler listener)
+    {
 
+    }
+    void IAsteroid.GetRekt()
+    {
+        Controller.Die(null);
+    }
     public PlayerShipController Controller;
 
     public DieHandler OnDie;
@@ -31,7 +38,8 @@ public class PlayerShip : BaseBehavior, IPlayerShipView, IPlayerShip {
     }
     void IPlayerShipView.Die(IAsteroid asteroidHit)
     {
-        asteroidHit.GetRekt();
+        if(asteroidHit != null)
+            asteroidHit.GetRekt();
         OnDie.Invoke();
         transform.localPosition = new Vector3(0, 0, 0);
     }

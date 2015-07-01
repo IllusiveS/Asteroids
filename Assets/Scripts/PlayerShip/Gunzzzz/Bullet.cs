@@ -7,8 +7,17 @@ public interface IBulletView
 {
 
 }
-public class Bullet : BaseBehavior, IBulletView
+public class Bullet : BaseBehavior, IBulletView, IAsteroid
 {
+    void IAsteroid.AddRektListener(RektHandler listener)
+    {
+
+    }
+    void IAsteroid.GetRekt()
+    {
+        Destroy(gameObject);
+    }
+
     public float startSpeed;
 
     protected Rigidbody2D rigidbody;

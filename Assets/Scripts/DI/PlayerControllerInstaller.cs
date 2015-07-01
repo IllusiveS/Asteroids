@@ -6,6 +6,7 @@ public class PlayerControllerInstaller : MonoInstaller {
 
     public GameObject playerControllerPrefab;
     public GameObject asteroidPrefab;
+    public GameObject spaceDogePrefab;
 
     public override void InstallBindings()
     {
@@ -13,6 +14,7 @@ public class PlayerControllerInstaller : MonoInstaller {
         Container.Bind<IPlayer>().ToInstance(newObj.GetComponent<IPlayer>());
         Container.Bind<IPlayerController>().ToInstance(newObj.GetComponent<Player>().Controller);
         Container.BindGameObjectFactory<Asteroid.Factory>(asteroidPrefab);
+        Container.BindGameObjectFactory<AlienShip.Factory>(spaceDogePrefab);
     }
 
 }
